@@ -19,11 +19,20 @@ const cardVariants = {
   }),
 };
 
+const MEDIUM_LABELS: Record<string, string> = {
+  paper: 'Fine Art Paper',
+  canvas: 'Canvas',
+  acrylic: 'Acrylic',
+  metal: 'Metal',
+};
+
+function uniqueInOrder<T>(values: T[]): T[] {
+  return Array.from(new Set(values));
+}
+
 export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardProps) {
-  const startingPrice =
-    artwork.variants.length > 0
-      ? Math.min(...artwork.variants.map((v) => v.retailPrice))
-      : null;
+  const hasPrints = artwork.variants.length > 0;
+  const mediumLabel = uniqueInOrder(artwork.variants.map((v) => MEDIUM_LABELS[v.medium] ?? v.medium)).join(' & ');
 
   return (
     <motion.button
@@ -41,18 +50,24 @@ export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardPro
           src={artwork.image}
           alt={artwork.title}
           fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="object-contain transition-opacity duration-500"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
-      <div className="mt-4 flex items-baseline justify-between">
-        <h3 className="text-sm tracking-wide text-neutral-100">{artwork.title}</h3>
-        <span className="text-xs text-neutral-500">
-          {startingPrice !== null ? `from $${startingPrice.toFixed(0)}` : 'Display only'}
-        </span>
+
+      <div className="mt-6 max-w-md">
+        <h3 className="font-serif text-xl text-neutral-100">{artwork.title}</h3>
+        {mediumLabel && <p className="mt-1 text-xs uppercase tracking-[0.15em] text-neutral-500">{mediumLabel}</p>}
+
+        <p className="mt-4 text-xs uppercase tracking-[0.1em] text-neutral-300">
+          Original Work Available <span className="text-neutral-600">·</span> Inquire for Private Acquisition
+        </p>
+
+        {hasPrints && (
+          <p className="mt-1 text-xs text-neutral-500">Archival Prints Available from $180</p>
+        )}
       </div>
-      <p className="mt-1 text-xs uppercase tracking-[0.15em] text-neutral-600">{artwork.theme}</p>
     </motion.button>
   );
 }

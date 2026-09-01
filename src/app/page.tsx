@@ -26,7 +26,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-xs uppercase tracking-[0.25em] text-neutral-500"
           >
-            Original Works · Museum-Grade Prints
+            Original Works · Private Collection
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
@@ -34,7 +34,7 @@ export default function Home() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-4 max-w-2xl font-serif text-4xl leading-tight text-neutral-50 sm:text-5xl"
           >
-            Fine art, brought to your walls.
+            The New Earth Collection
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -42,15 +42,15 @@ export default function Home() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-5 max-w-lg text-sm leading-relaxed text-neutral-400"
           >
-            Each piece is printed to order on fine art paper or stretched canvas, fulfilled by
-            FinerWorks and shipped directly to you.
+            Original works available for private acquisition. Archival reproductions offered
+            in select configurations, fulfilled by FinerWorks and shipped directly to you.
           </motion.p>
         </section>
 
         {/* Gallery grid */}
-        <section className="mx-auto max-w-6xl px-6 pb-32">
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {ARTWORKS.map((artwork, index) => (
+        <section className="mx-auto max-w-6xl px-6 py-24">
+          <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-20">
+            {ARTWORKS.slice(0, 8).map((artwork, index) => (
               <ArtworkCard
                 key={artwork.id}
                 artwork={artwork}
