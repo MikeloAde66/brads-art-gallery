@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { X } from 'lucide-react';
-import type { Artwork, ArtworkVariant } from '@/data/artworks';
-import { useCartStore } from '@/store/useCartStore';
+import type { Artwork } from '@/data/artworks';
+import PrintConfigurator from './PrintConfigurator';
 
 interface ProductModalProps {
   artwork: Artwork | null;
@@ -13,20 +13,6 @@ interface ProductModalProps {
 }
 
 export default function ProductModal({ artwork, onClose }: ProductModalProps) {
-  const addItem = useCartStore((state) => state.addItem);
-  const [selectedVariant, setSelectedVariant] = useState<ArtworkVariant | null>(
-    artwork?.variants[0] ?? null
-  );
-  const [justAdded, setJustAdded] = useState(false);
-
-  // Reset the selected variant (and any "Added" confirmation state) every
-  // time a different artwork is opened, rather than carrying over
-  // whatever was selected on the previous one.
-  useEffect(() => {
-    setSelectedVariant(artwork?.variants[0] ?? null);
-    setJustAdded(false);
-  }, [artwork]);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -34,13 +20,6 @@ export default function ProductModal({ artwork, onClose }: ProductModalProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
-
-  const handleAddToCart = () => {
-    if (!artwork || !selectedVariant) return;
-    addItem(artwork, selectedVariant);
-    setJustAdded(true);
-    window.setTimeout(() => setJustAdded(false), 1800);
-  };
 
   return (
     <AnimatePresence>
@@ -69,62 +48,22 @@ export default function ProductModal({ artwork, onClose }: ProductModalProps) {
               <X className="h-4 w-4" />
             </button>
 
-            <div className="relative aspect-square sm:aspect-auto">
-              <Image src={artwork.image} alt={artwork.title} fill className="object-cover" />
-            </div>
-
-            <div className="flex flex-col p-6 sm:p-8">
-              <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">{artwork.theme}</p>
-              <h2 className="mt-1 text-2xl font-serif text-neutral-100">{artwork.title}</h2>
-
-              {selectedVariant ? (
-                <>
-                  <div className="mt-6">
-                    <p className="text-xs uppercase tracking-widest text-neutral-500">Substrate</p>
-                    <div className="mt-2 flex gap-2">
-                      {artwork.variants.map((variant) => (
-                        <button
-                          key={variant.id}
-                          type="button"
-                          onClick={() => setSelectedVariant(variant)}
-                          className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wide transition-colors ${
-                            selectedVariant.id === variant.id
-                              ? 'border-neutral-100 bg-neutral-100 text-black'
-                              : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'
-                          }`}
-                        >
-                          {variant.substrate === 'canvas' ? 'Stretched Canvas' : 'Fine Art Paper'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <p className="text-xs uppercase tracking-widest text-neutral-500">Size</p>
-                    <p className="mt-2 text-sm text-neutral-200">{selectedVariant.size}</p>
-                  </div>
-
-                  <div className="mt-6 flex items-baseline gap-2">
-                    <span className="text-3xl font-serif text-neutral-100">
-                      ${selectedVariant.retailPrice.toFixed(2)}
-                    </span>
-                    <span className="text-xs text-neutral-600">SKU {selectedVariant.sku}</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleAddToCart}
-                    className="mt-8 w-full rounded-full bg-neutral-100 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-white disabled:opacity-50"
-                  >
-                    {justAdded ? 'Added to Cart' : 'Add to Cart'}
-                  </button>
-                </>
-              ) : (
-                <p className="mt-6 text-sm text-neutral-400">
-                  Display only — not currently available as a print.
-                </p>
-              )}
-            </div>
+            {artwork.variants.length > 0 ? (
+              <PrintConfigurator key={artwork.id} artwork={artwork} />
+            ) : (
+              <>
+                <div className="relative aspect-square sm:aspect-auto">
+                  <Image src={artwork.image} alt={artwork.title} fill className="object-cover" />
+                </div>
+                <div className="flex flex-col p-6 sm:p-8">
+                  <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">{artwork.theme}</p>
+                  <h2 className="mt-1 text-2xl font-serif text-neutral-100">{artwork.title}</h2>
+                  <p className="mt-6 text-sm text-neutral-400">
+                    Display only — not currently available as a print.
+                  </p>
+                </div>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}

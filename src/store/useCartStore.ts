@@ -1,16 +1,23 @@
 import { create } from 'zustand';
-import { Artwork, ArtworkVariant } from '@/data/artworks';
+import { Artwork } from '@/data/artworks';
+import { priceConfiguration, type PrintConfiguration } from '@/lib/pricing';
+
+export interface PrintSelection {
+  variantId: string;
+  frameId: string;
+  matId: string;
+}
 
 export interface CartItem {
   cartItemId: string;
   artwork: Artwork;
-  selectedVariant: ArtworkVariant;
+  configuration: PrintConfiguration;
   quantity: number;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (artwork: Artwork, variant: ArtworkVariant) => void;
+  addItem: (artwork: Artwork, selection: PrintSelection) => void;
   removeItem: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -20,8 +27,9 @@ interface CartStore {
 
 export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
-  addItem: (artwork, variant) => {
-    const cartItemId = `${artwork.id}-${variant.id}`;
+  addItem: (artwork, selection) => {
+    const configuration: PrintConfiguration = { artworkId: artwork.id, ...selection };
+    const cartItemId = `${artwork.id}-${selection.variantId}-${selection.frameId}-${selection.matId}`;
     set((state) => {
       const existing = state.items.find((i) => i.cartItemId === cartItemId);
       if (existing) {
@@ -31,7 +39,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
           ),
         };
       }
-      return { items: [...state.items, { cartItemId, artwork, selectedVariant: variant, quantity: 1 }] };
+      return { items: [...state.items, { cartItemId, artwork, configuration, quantity: 1 }] };
     });
   },
   removeItem: (cartItemId) =>
@@ -45,6 +53,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
     })),
   clearCart: () => set({ items: [] }),
   getTotal: () =>
-    get().items.reduce((sum, item) => sum + item.selectedVariant.retailPrice * item.quantity, 0),
+    get().items.reduce(
+      (sum, item) => sum + (priceConfiguration(item.configuration)?.total ?? 0) * item.quantity,
+      0
+    ),
   getItemCount: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
 }));

@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
 import { Minus, Plus, X } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { resolveConfiguration, priceConfiguration } from '@/lib/pricing';
+import { getSizePreset } from '@/data/printOptions';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -28,8 +30,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: items.map((item) => ({
-            artworkId: item.artwork.id,
-            variantId: item.selectedVariant.id,
+            configuration: item.configuration,
             quantity: item.quantity,
           })),
         }),
@@ -85,7 +86,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <p className="mt-12 text-center text-sm text-neutral-500">Your cart is empty.</p>
               ) : (
                 <ul className="space-y-5">
-                  {items.map((item) => (
+                  {items.map((item) => {
+                    const resolved = resolveConfiguration(item.configuration);
+                    const breakdown = priceConfiguration(item.configuration);
+                    const sizeLabel = resolved ? getSizePreset(resolved.variant.sizeId)?.label ?? resolved.variant.sizeId : '';
+                    const mediumLabel = resolved?.variant.medium === 'canvas' ? 'Canvas' : 'Paper';
+                    const frameLabel = resolved && resolved.frame.id !== 'none' ? ` · ${resolved.frame.label}` : '';
+                    const matLabel = resolved && resolved.mat.id !== 'none' ? ` · ${resolved.mat.label}` : '';
+                    return (
                     <li key={item.cartItemId} className="flex gap-4">
                       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-neutral-900">
                         <Image
@@ -101,8 +109,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           <div>
                             <p className="text-sm text-neutral-100">{item.artwork.title}</p>
                             <p className="text-xs text-neutral-500">
-                              {item.selectedVariant.size} ·{' '}
-                              {item.selectedVariant.substrate === 'canvas' ? 'Canvas' : 'Paper'}
+                              {sizeLabel} · {mediumLabel}
+                              {frameLabel}
+                              {matLabel}
                             </p>
                           </div>
                           <button
@@ -135,12 +144,13 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             </button>
                           </div>
                           <span className="text-sm text-neutral-100">
-                            ${(item.selectedVariant.retailPrice * item.quantity).toFixed(2)}
+                            ${((breakdown?.total ?? 0) * item.quantity).toFixed(2)}
                           </span>
                         </div>
                       </div>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               )}
             </div>

@@ -1,7 +1,9 @@
+import type { Medium } from './printOptions';
+
 export interface ArtworkVariant {
   id: string;
-  size: string;
-  substrate: 'paper' | 'canvas';
+  medium: Medium;
+  sizeId: string;
   sku: string;
   wholesalePrice: number;
   retailPrice: number;
@@ -26,16 +28,16 @@ export const ARTWORKS: Artwork[] = [
     variants: [
       {
         id: 'var-1a',
-        size: '16x20"',
-        substrate: 'paper',
+        medium: 'paper',
+        sizeId: '16x20',
         sku: 'AP106926P681228',
         wholesalePrice: 47.50,
         retailPrice: 120.00,
       },
       {
         id: 'var-1b',
-        size: '16x20"',
-        substrate: 'canvas',
+        medium: 'canvas',
+        sizeId: '16x20',
         sku: 'AP106926P681227',
         wholesalePrice: 80.00,
         retailPrice: 190.00,
@@ -51,8 +53,8 @@ export const ARTWORKS: Artwork[] = [
     variants: [
       {
         id: 'var-2a',
-        size: '20x20"',
-        substrate: 'canvas',
+        medium: 'canvas',
+        sizeId: '20x20',
         sku: 'AP106926P681226',
         wholesalePrice: 100.00,
         retailPrice: 240.00,
@@ -68,8 +70,8 @@ export const ARTWORKS: Artwork[] = [
     variants: [
       {
         id: 'var-3a',
-        size: '16x20"',
-        substrate: 'canvas',
+        medium: 'canvas',
+        sizeId: '16x20',
         sku: 'AP106926P681224',
         wholesalePrice: 80.00,
         retailPrice: 190.00,

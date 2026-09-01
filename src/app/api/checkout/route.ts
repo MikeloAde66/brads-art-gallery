@@ -1,24 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { ARTWORKS } from '@/data/artworks';
+import { getSizePreset } from '@/data/printOptions';
+import {
+  buildFinerWorksLineItem,
+  priceConfiguration,
+  resolveConfiguration,
+  type FinerWorksLineItem,
+  type PrintConfiguration,
+} from '@/lib/pricing';
 
 interface CheckoutRequestItem {
-  artworkId: string;
-  variantId: string;
+  configuration?: PrintConfiguration;
   quantity: number;
 }
 
-// FinerWorks needs exactly which SKU + quantity to fulfill once payment
-// succeeds. Stripe session metadata (checked by the checkout.session.completed
-// webhook, not built yet here) carries the order as a JSON string — Stripe
-// caps each metadata value at 500 characters, comfortably enough for a
-// gallery-sized cart of a handful of prints.
-interface FinerWorksLineItem {
-  sku: string;
-  quantity: number;
-  title: string;
-  size: string;
-  substrate: string;
+// Stripe caps each metadata value at 500 characters. A single unbounded JSON
+// blob of every line item risks exceeding that once carts include frame/mat
+// selections, so line items are packed into as few chunks as fit and spread
+// across finerworks_order_0, finerworks_order_1, … instead.
+const METADATA_VALUE_LIMIT = 500;
+
+function chunkFinerWorksOrder(lineItems: FinerWorksLineItem[]): string[] {
+  const chunks: string[] = [];
+  let current: FinerWorksLineItem[] = [];
+
+  for (const item of lineItems) {
+    const candidate = [...current, item];
+    if (JSON.stringify(candidate).length > METADATA_VALUE_LIMIT && current.length > 0) {
+      chunks.push(JSON.stringify(current));
+      current = [item];
+    } else {
+      current = candidate;
+    }
+  }
+  if (current.length > 0) chunks.push(JSON.stringify(current));
+
+  return chunks;
 }
 
 export async function POST(request: NextRequest) {
@@ -41,47 +58,57 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Cart is empty.' }, { status: 400 });
   }
 
-  // Resolve every line item's real price/SKU/title server-side from
-  // ARTWORKS rather than trusting whatever the client sends — a client
-  // could otherwise submit an arbitrary price for a real SKU.
+  // Resolve every line item's real price/SKU/title server-side against the
+  // known artwork/print-option catalogs rather than trusting whatever the
+  // client sends — a client could otherwise submit an arbitrary price, or a
+  // frame/mat/size combination that isn't actually orderable.
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   const finerworksOrder: FinerWorksLineItem[] = [];
 
   for (const requested of requestedItems) {
-    const artwork = ARTWORKS.find((a) => a.id === requested.artworkId);
-    const variant = artwork?.variants.find((v) => v.id === requested.variantId);
     const quantity = Math.floor(Number(requested.quantity));
+    const configuration = requested.configuration;
 
-    if (!artwork || !variant || !Number.isFinite(quantity) || quantity < 1) {
+    const resolved = configuration ? resolveConfiguration(configuration) : null;
+    const breakdown = configuration ? priceConfiguration(configuration) : null;
+
+    if (!configuration || !resolved || !breakdown || !Number.isFinite(quantity) || quantity < 1) {
       return NextResponse.json(
-        { error: `Invalid cart item: ${requested.artworkId ?? 'unknown'}.` },
+        { error: `Invalid cart item: ${configuration?.artworkId ?? 'unknown'}.` },
         { status: 400 }
       );
     }
+
+    const sizeLabel = getSizePreset(resolved.variant.sizeId)?.label ?? resolved.variant.sizeId;
+    const mediumLabel = resolved.variant.medium === 'canvas' ? 'Canvas' : resolved.variant.medium === 'paper' ? 'Fine Art Paper' : resolved.variant.medium;
+    const frameLabel = resolved.frame.id !== 'none' ? ` · ${resolved.frame.label}` : '';
+    const matLabel = resolved.mat.id !== 'none' ? ` · ${resolved.mat.label}` : '';
 
     lineItems.push({
       price_data: {
         currency: 'usd',
         product_data: {
-          name: `${artwork.title} — ${variant.size} ${variant.substrate === 'canvas' ? 'Canvas' : 'Fine Art Paper'}`,
-          images: [artwork.image],
-          metadata: { finerworks_sku: variant.sku },
+          name: `${resolved.artwork.title} — ${sizeLabel} ${mediumLabel}${frameLabel}${matLabel}`,
+          images: [resolved.artwork.image],
+          metadata: { finerworks_sku: resolved.variant.sku },
         },
-        unit_amount: Math.round(variant.retailPrice * 100),
+        unit_amount: Math.round(breakdown.total * 100),
       },
       quantity,
     });
 
-    finerworksOrder.push({
-      sku: variant.sku,
-      quantity,
-      title: artwork.title,
-      size: variant.size,
-      substrate: variant.substrate,
-    });
+    const finerworksLineItem = buildFinerWorksLineItem(configuration, quantity);
+    if (finerworksLineItem) finerworksOrder.push(finerworksLineItem);
   }
 
   const origin = request.nextUrl.origin;
+  const chunks = chunkFinerWorksOrder(finerworksOrder);
+  const metadata: Record<string, string> = {
+    finerworks_order_count: String(chunks.length),
+  };
+  chunks.forEach((chunk, i) => {
+    metadata[`finerworks_order_${i}`] = chunk;
+  });
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -89,9 +116,7 @@ export async function POST(request: NextRequest) {
       line_items: lineItems,
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?checkout=cancelled`,
-      metadata: {
-        finerworks_order: JSON.stringify(finerworksOrder),
-      },
+      metadata,
     });
 
     return NextResponse.json({ url: session.url });
