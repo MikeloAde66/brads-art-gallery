@@ -5,7 +5,6 @@ import { priceConfiguration, type PrintConfiguration } from '@/lib/pricing';
 export interface PrintSelection {
   variantId: string;
   frameId: string;
-  matId: string;
 }
 
 export interface CartItem {
@@ -29,7 +28,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
   items: [],
   addItem: (artwork, selection) => {
     const configuration: PrintConfiguration = { artworkId: artwork.id, ...selection };
-    const cartItemId = `${artwork.id}-${selection.variantId}-${selection.frameId}-${selection.matId}`;
+    const cartItemId = `${artwork.id}-${selection.variantId}-${selection.frameId}`;
     set((state) => {
       const existing = state.items.find((i) => i.cartItemId === cartItemId);
       if (existing) {

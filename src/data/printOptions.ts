@@ -33,22 +33,26 @@ export const FRAME_STYLES: FrameStyle[] = [
   { id: 'silver-metal', label: 'Silver Metal', colorHex: '#c7c9cc', previewBorderWidthPx: 10, sku: 'TBD-FRAME-SILVERMETAL', surcharge: 50 },
 ];
 
+// Mat is NOT an independent, separately-priced add-on: FinerWorks prices a
+// mat/mounting choice as part of one fully-specified, all-in SKU (e.g.
+// "Canvas + Matboard Mounted Thin + 16x20" is a single $80 product, not a
+// base canvas price plus a mat surcharge). So MAT_OPTIONS is purely a
+// display/label/preview-swatch catalog — every ArtworkVariant carries its
+// own `matId` referencing this for labeling, and its own real, all-in
+// `sku`/`retailPrice` for that exact medium+size+mat combination.
 export interface MatOption {
   id: string;
   label: string;
   colorHex: string;
   /** Real inches, used to scale the live preview's padding. */
   widthIn: number;
-  /** FinerWorks catalog code. `null` means no mat add-on. TBD-prefixed until real codes are supplied. */
-  sku: string | null;
-  surcharge: number;
 }
 
 export const MAT_OPTIONS: MatOption[] = [
-  { id: 'none', label: 'No Mat', colorHex: '#000000', widthIn: 0, sku: null, surcharge: 0 },
-  { id: 'white-2in', label: 'White', colorHex: '#f5f5f0', widthIn: 2, sku: 'TBD-MAT-WHITE-2IN', surcharge: 20 },
-  { id: 'black-2in', label: 'Black', colorHex: '#0a0a0a', widthIn: 2, sku: 'TBD-MAT-BLACK-2IN', surcharge: 20 },
-  { id: 'cream-3in', label: 'Cream', colorHex: '#efe6d8', widthIn: 3, sku: 'TBD-MAT-CREAM-3IN', surcharge: 25 },
+  { id: 'none', label: 'No Mat', colorHex: '#000000', widthIn: 0 },
+  { id: 'white-2in', label: 'White', colorHex: '#f5f5f0', widthIn: 2 },
+  { id: 'black-2in', label: 'Black', colorHex: '#0a0a0a', widthIn: 2 },
+  { id: 'cream-3in', label: 'Cream', colorHex: '#efe6d8', widthIn: 3 },
 ];
 
 export function getSizePreset(id: string): SizePreset | undefined {

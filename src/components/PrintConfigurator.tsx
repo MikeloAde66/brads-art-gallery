@@ -32,38 +32,49 @@ const pillClasses = (active: boolean) =>
 export default function PrintConfigurator({ artwork }: PrintConfiguratorProps) {
   const addItem = useCartStore((state) => state.addItem);
 
-  const mediumOptions = uniqueInOrder(artwork.variants.map((v) => v.medium));
-  const [medium, setMedium] = useState(mediumOptions[0]);
-
+  // Mat is part of a variant's identity (FinerWorks prices medium+size+mat as
+  // one all-in SKU), so it cascades the same way size cascades from medium.
   const sizeOptionsFor = (m: string) =>
     uniqueInOrder(artwork.variants.filter((v) => v.medium === m).map((v) => v.sizeId));
+  const matOptionsFor = (m: string, s: string) =>
+    uniqueInOrder(artwork.variants.filter((v) => v.medium === m && v.sizeId === s).map((v) => v.matId));
 
+  const mediumOptions = uniqueInOrder(artwork.variants.map((v) => v.medium));
+  const [medium, setMedium] = useState(mediumOptions[0]);
   const [sizeId, setSizeId] = useState(sizeOptionsFor(medium)[0]);
+  const [matId, setMatId] = useState(matOptionsFor(medium, sizeOptionsFor(medium)[0])[0]);
   const [frameId, setFrameId] = useState('none');
-  const [matId, setMatId] = useState('none');
   const [justAdded, setJustAdded] = useState(false);
 
   const sizeOptions = sizeOptionsFor(medium);
+  const matOptions = matOptionsFor(medium, sizeId);
 
   const handleMediumChange = (nextMedium: string) => {
+    const nextSizeId = sizeOptionsFor(nextMedium)[0];
     setMedium(nextMedium as typeof medium);
-    setSizeId(sizeOptionsFor(nextMedium)[0]);
+    setSizeId(nextSizeId);
+    setMatId(matOptionsFor(nextMedium, nextSizeId)[0]);
+  };
+
+  const handleSizeChange = (nextSizeId: string) => {
+    setSizeId(nextSizeId);
+    setMatId(matOptionsFor(medium, nextSizeId)[0]);
   };
 
   const variant: ArtworkVariant | undefined = artwork.variants.find(
-    (v) => v.medium === medium && v.sizeId === sizeId
+    (v) => v.medium === medium && v.sizeId === sizeId && v.matId === matId
   );
   const sizePreset = variant ? getSizePreset(variant.sizeId) : undefined;
   const frame = FRAME_STYLES.find((f) => f.id === frameId) ?? FRAME_STYLES[0];
   const mat = MAT_OPTIONS.find((m) => m.id === matId) ?? MAT_OPTIONS[0];
 
   const breakdown = variant
-    ? priceConfiguration({ artworkId: artwork.id, variantId: variant.id, frameId, matId })
+    ? priceConfiguration({ artworkId: artwork.id, variantId: variant.id, frameId })
     : null;
 
   const handleAddToCart = () => {
     if (!variant) return;
-    addItem(artwork, { variantId: variant.id, frameId, matId });
+    addItem(artwork, { variantId: variant.id, frameId });
     setJustAdded(true);
     window.setTimeout(() => setJustAdded(false), 1800);
   };
@@ -104,7 +115,7 @@ export default function PrintConfigurator({ artwork }: PrintConfiguratorProps) {
           {sizeOptions.length > 1 ? (
             <div className="mt-2 flex flex-wrap gap-2">
               {sizeOptions.map((id) => (
-                <button key={id} type="button" onClick={() => setSizeId(id)} className={pillClasses(sizeId === id)}>
+                <button key={id} type="button" onClick={() => handleSizeChange(id)} className={pillClasses(sizeId === id)}>
                   {getSizePreset(id)?.label ?? id}
                 </button>
               ))}
@@ -115,22 +126,26 @@ export default function PrintConfigurator({ artwork }: PrintConfiguratorProps) {
         </div>
 
         <div className="mt-4">
+          <p className="text-xs uppercase tracking-widest text-neutral-500">Mat</p>
+          {matOptions.length > 1 ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {matOptions.map((id) => (
+                <button key={id} type="button" onClick={() => setMatId(id)} className={pillClasses(matId === id)}>
+                  {MAT_OPTIONS.find((m) => m.id === id)?.label ?? id}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-neutral-200">{mat.label}</p>
+          )}
+        </div>
+
+        <div className="mt-4">
           <p className="text-xs uppercase tracking-widest text-neutral-500">Frame</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {FRAME_STYLES.map((f) => (
               <button key={f.id} type="button" onClick={() => setFrameId(f.id)} className={pillClasses(frameId === f.id)}>
                 {f.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <p className="text-xs uppercase tracking-widest text-neutral-500">Mat</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {MAT_OPTIONS.map((m) => (
-              <button key={m.id} type="button" onClick={() => setMatId(m.id)} className={pillClasses(matId === m.id)}>
-                {m.label}
               </button>
             ))}
           </div>

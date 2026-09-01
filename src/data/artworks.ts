@@ -4,6 +4,9 @@ export interface ArtworkVariant {
   id: string;
   medium: Medium;
   sizeId: string;
+  /** References MAT_OPTIONS — part of this variant's identity, since FinerWorks
+   *  prices mat/mounting as part of one all-in SKU, not a separate add-on. */
+  matId: string;
   sku: string;
   wholesalePrice: number;
   retailPrice: number;
@@ -30,6 +33,7 @@ export const ARTWORKS: Artwork[] = [
         id: 'var-1a',
         medium: 'paper',
         sizeId: '16x20',
+        matId: 'none',
         sku: 'AP106926P681228',
         wholesalePrice: 47.50,
         retailPrice: 120.00,
@@ -38,6 +42,7 @@ export const ARTWORKS: Artwork[] = [
         id: 'var-1b',
         medium: 'canvas',
         sizeId: '16x20',
+        matId: 'none',
         sku: 'AP106926P681227',
         wholesalePrice: 80.00,
         retailPrice: 190.00,
@@ -55,6 +60,7 @@ export const ARTWORKS: Artwork[] = [
         id: 'var-2a',
         medium: 'canvas',
         sizeId: '20x20',
+        matId: 'none',
         sku: 'AP106926P681226',
         wholesalePrice: 100.00,
         retailPrice: 240.00,
@@ -72,6 +78,7 @@ export const ARTWORKS: Artwork[] = [
         id: 'var-3a',
         medium: 'canvas',
         sizeId: '16x20',
+        matId: 'none',
         sku: 'AP106926P681224',
         wholesalePrice: 80.00,
         retailPrice: 190.00,
