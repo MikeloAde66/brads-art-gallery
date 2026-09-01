@@ -44,7 +44,7 @@ export default function ProductModal({ artwork, onClose }: ProductModalProps) {
 
   return (
     <AnimatePresence>
-      {artwork && selectedVariant && (
+      {artwork && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
           initial={{ opacity: 0 }}
@@ -77,45 +77,53 @@ export default function ProductModal({ artwork, onClose }: ProductModalProps) {
               <p className="text-xs uppercase tracking-[0.15em] text-neutral-500">{artwork.theme}</p>
               <h2 className="mt-1 text-2xl font-serif text-neutral-100">{artwork.title}</h2>
 
-              <div className="mt-6">
-                <p className="text-xs uppercase tracking-widest text-neutral-500">Substrate</p>
-                <div className="mt-2 flex gap-2">
-                  {artwork.variants.map((variant) => (
-                    <button
-                      key={variant.id}
-                      type="button"
-                      onClick={() => setSelectedVariant(variant)}
-                      className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wide transition-colors ${
-                        selectedVariant.id === variant.id
-                          ? 'border-neutral-100 bg-neutral-100 text-black'
-                          : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'
-                      }`}
-                    >
-                      {variant.substrate === 'canvas' ? 'Stretched Canvas' : 'Fine Art Paper'}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {selectedVariant ? (
+                <>
+                  <div className="mt-6">
+                    <p className="text-xs uppercase tracking-widest text-neutral-500">Substrate</p>
+                    <div className="mt-2 flex gap-2">
+                      {artwork.variants.map((variant) => (
+                        <button
+                          key={variant.id}
+                          type="button"
+                          onClick={() => setSelectedVariant(variant)}
+                          className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-wide transition-colors ${
+                            selectedVariant.id === variant.id
+                              ? 'border-neutral-100 bg-neutral-100 text-black'
+                              : 'border-neutral-700 text-neutral-300 hover:border-neutral-500'
+                          }`}
+                        >
+                          {variant.substrate === 'canvas' ? 'Stretched Canvas' : 'Fine Art Paper'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="mt-4">
-                <p className="text-xs uppercase tracking-widest text-neutral-500">Size</p>
-                <p className="mt-2 text-sm text-neutral-200">{selectedVariant.size}</p>
-              </div>
+                  <div className="mt-4">
+                    <p className="text-xs uppercase tracking-widest text-neutral-500">Size</p>
+                    <p className="mt-2 text-sm text-neutral-200">{selectedVariant.size}</p>
+                  </div>
 
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="text-3xl font-serif text-neutral-100">
-                  ${selectedVariant.retailPrice.toFixed(2)}
-                </span>
-                <span className="text-xs text-neutral-600">SKU {selectedVariant.sku}</span>
-              </div>
+                  <div className="mt-6 flex items-baseline gap-2">
+                    <span className="text-3xl font-serif text-neutral-100">
+                      ${selectedVariant.retailPrice.toFixed(2)}
+                    </span>
+                    <span className="text-xs text-neutral-600">SKU {selectedVariant.sku}</span>
+                  </div>
 
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="mt-8 w-full rounded-full bg-neutral-100 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-white disabled:opacity-50"
-              >
-                {justAdded ? 'Added to Cart' : 'Add to Cart'}
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className="mt-8 w-full rounded-full bg-neutral-100 py-3 text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-white disabled:opacity-50"
+                  >
+                    {justAdded ? 'Added to Cart' : 'Add to Cart'}
+                  </button>
+                </>
+              ) : (
+                <p className="mt-6 text-sm text-neutral-400">
+                  Display only — not currently available as a print.
+                </p>
+              )}
             </div>
           </motion.div>
         </motion.div>

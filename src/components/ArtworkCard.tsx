@@ -20,7 +20,10 @@ const cardVariants = {
 };
 
 export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardProps) {
-  const startingPrice = Math.min(...artwork.variants.map((v) => v.retailPrice));
+  const startingPrice =
+    artwork.variants.length > 0
+      ? Math.min(...artwork.variants.map((v) => v.retailPrice))
+      : null;
 
   return (
     <motion.button
@@ -45,7 +48,9 @@ export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardPro
       </div>
       <div className="mt-4 flex items-baseline justify-between">
         <h3 className="text-sm tracking-wide text-neutral-100">{artwork.title}</h3>
-        <span className="text-xs text-neutral-500">from ${startingPrice.toFixed(0)}</span>
+        <span className="text-xs text-neutral-500">
+          {startingPrice !== null ? `from $${startingPrice.toFixed(0)}` : 'Display only'}
+        </span>
       </div>
       <p className="mt-1 text-xs uppercase tracking-[0.15em] text-neutral-600">{artwork.theme}</p>
     </motion.button>

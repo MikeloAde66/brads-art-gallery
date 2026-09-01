@@ -19,10 +19,10 @@ export interface Artwork {
 export const ARTWORKS: Artwork[] = [
   {
     id: 'art-1',
-    slug: 'dancer-in-white',
-    title: 'Dancer in White',
+    slug: 'red-sea-dance',
+    title: 'Red Sea Dance',
     theme: 'impasto',
-    image: 'https://images.unsplash.com/photo-1518834107812-67b0b7c58434?auto=format&fit=crop&w=800&q=80',
+    image: '/images/works/red-sea-dance.jpg',
     variants: [
       {
         id: 'var-1a',
@@ -44,10 +44,10 @@ export const ARTWORKS: Artwork[] = [
   },
   {
     id: 'art-2',
-    slug: 'autumn-path',
-    title: 'Autumn Path',
+    slug: 'pond-at-the-landing',
+    title: 'Pond at the Landing',
     theme: 'coastal',
-    image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80',
+    image: '/images/works/pond-at-the-landing.jpg',
     variants: [
       {
         id: 'var-2a',
@@ -61,10 +61,10 @@ export const ARTWORKS: Artwork[] = [
   },
   {
     id: 'art-3',
-    slug: 'white-horse-study',
-    title: 'White Horse Study',
+    slug: 'queenie',
+    title: 'Queenie',
     theme: 'monochrome',
-    image: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80',
+    image: '/images/works/queenie.jpg',
     variants: [
       {
         id: 'var-3a',
@@ -78,19 +78,10 @@ export const ARTWORKS: Artwork[] = [
   },
   {
     id: 'art-4',
-    slug: 'reflective-pond',
-    title: 'Reflective Pond',
+    slug: 'charles-town-landing',
+    title: 'Charles Town Landing',
     theme: 'chiaroscuro',
-    image: 'https://images.unsplash.com/photo-1502786129293-79981df4e689?auto=format&fit=crop&w=800&q=80',
-    variants: [
-      {
-        id: 'var-4a',
-        size: '20x20"',
-        substrate: 'canvas',
-        sku: 'AP106926P681225',
-        wholesalePrice: 100.00,
-        retailPrice: 240.00,
-      },
-    ],
+    image: '/images/works/charles-town-landing.jpg',
+    variants: [],
   },
 ];
