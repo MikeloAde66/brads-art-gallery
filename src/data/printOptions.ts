@@ -11,7 +11,10 @@ export const SIZE_PRESETS: SizePreset[] = [
   { id: '8x10', label: '8" x 10"', widthIn: 8, heightIn: 10 },
   { id: '11x14', label: '11" x 14"', widthIn: 11, heightIn: 14 },
   { id: '16x20', label: '16" x 20"', widthIn: 16, heightIn: 20 },
+  { id: '20x16', label: '20" x 16"', widthIn: 20, heightIn: 16 },
   { id: '20x20', label: '20" x 20"', widthIn: 20, heightIn: 20 },
+  { id: '13x19', label: '13" x 19"', widthIn: 13, heightIn: 19 },
+  { id: '13x18.71', label: '13" x 18.71"', widthIn: 13, heightIn: 18.71 },
   { id: '24x36', label: '24" x 36"', widthIn: 24, heightIn: 36 },
 ];
 
