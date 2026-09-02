@@ -2,12 +2,13 @@
 
 import { useState, useTransition } from 'react';
 import type { SiteConfig } from '@/lib/siteConfig';
-import { publishSiteConfig, uploadMedia, logoutAdmin } from './actions';
+import { publishSiteConfig, uploadMedia, logoutAdmin, checkDatabaseStatus } from './actions';
 import HeaderPanel from './panels/HeaderPanel';
 import VideoPanel from './panels/VideoPanel';
 import ShowcasePanel from './panels/ShowcasePanel';
 import NarrationPanel from './panels/NarrationPanel';
 import NavPanel from './panels/NavPanel';
+import DatabaseStatusPanel from './panels/DatabaseStatusPanel';
 import LivePreview from './LivePreview';
 
 interface EditorAppProps {
@@ -79,6 +80,7 @@ export default function EditorApp({ initialConfig }: EditorAppProps) {
             onUpload={uploadMedia}
           />
           <NavPanel value={draft.nav} onChange={(nav) => setDraft((d) => ({ ...d, nav }))} />
+          <DatabaseStatusPanel checkStatus={checkDatabaseStatus} />
         </div>
 
         <div className="flex-1 overflow-hidden">

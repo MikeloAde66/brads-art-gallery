@@ -23,6 +23,10 @@ export interface ShowcaseConfig {
   showAcquisitionNote: boolean;
   acquisitionNoteText: string;
   showPricing: boolean;
+  /** Internal reference links — never rendered on the public site. */
+  canvaLink: string;
+  highResExportUrl: string;
+  mockupUrl: string;
 }
 
 export interface NarrationConfig {
@@ -71,6 +75,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
     showAcquisitionNote: false,
     acquisitionNoteText: '',
     showPricing: true,
+    canvaLink: '',
+    highResExportUrl: '',
+    mockupUrl: '',
   },
   narration: {
     text: '',

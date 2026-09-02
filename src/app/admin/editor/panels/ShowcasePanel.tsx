@@ -113,6 +113,40 @@ export default function ShowcasePanel({ value, onChange, onUpload }: ShowcasePan
           className={inputClasses}
         />
       )}
+
+      <div className="space-y-3 border-t border-neutral-800 pt-4">
+        <p className={labelClasses}>Design &amp; Production Links (internal — never shown on the site)</p>
+        <div>
+          <label className={labelClasses}>Canva Pro Template</label>
+          <input
+            type="text"
+            value={value.canvaLink}
+            onChange={(e) => onChange({ ...value, canvaLink: e.target.value })}
+            placeholder="https://canva.com/…"
+            className={`mt-1 ${inputClasses}`}
+          />
+        </div>
+        <div>
+          <label className={labelClasses}>High-Res Export</label>
+          <input
+            type="text"
+            value={value.highResExportUrl}
+            onChange={(e) => onChange({ ...value, highResExportUrl: e.target.value })}
+            placeholder="https://…"
+            className={`mt-1 ${inputClasses}`}
+          />
+        </div>
+        <div>
+          <label className={labelClasses}>Layout Mockup</label>
+          <input
+            type="text"
+            value={value.mockupUrl}
+            onChange={(e) => onChange({ ...value, mockupUrl: e.target.value })}
+            placeholder="https://…"
+            className={`mt-1 ${inputClasses}`}
+          />
+        </div>
+      </div>
     </div>
   );
 }

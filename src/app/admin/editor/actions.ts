@@ -53,6 +53,47 @@ export async function uploadMedia(formData: FormData): Promise<{ url: string } |
   return { url: data.publicUrl };
 }
 
+export interface DatabaseStatus {
+  connected: boolean;
+  configured: boolean;
+  lastUpdated: string | null;
+  error: string | null;
+}
+
+// Read-only by design — reports connectivity, never modifies schema or
+// data. Schema/migration changes stay a deliberate, out-of-band action
+// (Supabase SQL editor or CLI), not something a webpage button can trigger.
+export async function checkDatabaseStatus(): Promise<DatabaseStatus> {
+  if (!(await isAuthed())) {
+    return { connected: false, configured: false, error: 'Unauthorized', lastUpdated: null };
+  }
+
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return { connected: false, configured: false, error: 'Supabase not configured yet.', lastUpdated: null };
+  }
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from(SITE_CONFIG_TABLE)
+      .select('updated_at')
+      .eq('id', SITE_CONFIG_ROW_ID)
+      .single();
+
+    if (error) {
+      return { connected: false, configured: true, error: error.message, lastUpdated: null };
+    }
+
+    return { connected: true, configured: true, error: null, lastUpdated: data?.updated_at ?? null };
+  } catch (err) {
+    return {
+      connected: false,
+      configured: true,
+      error: err instanceof Error ? err.message : 'Unknown error',
+      lastUpdated: null,
+    };
+  }
+}
+
 export async function logoutAdmin() {
   const cookieStore = await cookies();
   cookieStore.delete(ADMIN_SESSION_COOKIE);
