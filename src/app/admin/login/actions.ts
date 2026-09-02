@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { verifyPassword, getSessionCookieValue, ADMIN_SESSION_COOKIE } from '@/lib/adminAuth';
+import { verifyPassword, getSessionCookieValue, ADMIN_SESSION_COOKIE, SESSION_COOKIE_OPTIONS } from '@/lib/adminAuth';
 
 export async function loginAdmin(formData: FormData) {
   const password = String(formData.get('password') ?? '');
@@ -19,13 +19,7 @@ export async function loginAdmin(formData: FormData) {
   }
 
   const cookieStore = await cookies();
-  cookieStore.set(ADMIN_SESSION_COOKIE, sessionValue, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  cookieStore.set(ADMIN_SESSION_COOKIE, sessionValue, SESSION_COOKIE_OPTIONS);
 
   redirect('/admin/editor');
 }

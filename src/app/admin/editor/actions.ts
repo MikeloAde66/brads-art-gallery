@@ -3,7 +3,8 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { isAuthed, ADMIN_SESSION_COOKIE } from '@/lib/adminAuth';
+import { ADMIN_SESSION_COOKIE } from '@/lib/adminAuth';
+import { isAuthed } from '@/lib/adminSession';
 import { supabaseAdmin, SITE_CONFIG_TABLE, SITE_CONFIG_ROW_ID, MEDIA_BUCKET } from '@/lib/supabaseAdmin';
 import type { SiteConfig } from '@/lib/siteConfig';
 

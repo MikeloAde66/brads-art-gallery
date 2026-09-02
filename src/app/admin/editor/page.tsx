@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { isAuthed } from '@/lib/adminAuth';
+import { isAuthed } from '@/lib/adminSession';
 import { getSiteConfig } from '@/lib/siteConfig';
 import EditorApp from './EditorApp';
 
