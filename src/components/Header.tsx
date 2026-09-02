@@ -4,19 +4,25 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import type { NavItem } from '@/lib/siteConfig';
 import CartDrawer from './CartDrawer';
 
-const PRODUCTS_MENU = [
+const DEFAULT_PRODUCTS_MENU: NavItem[] = [
   { label: 'Wall Art', href: '/shop', description: 'Canvas, framed, and paper prints' },
   { label: 'Media', href: '/products/media', description: 'Charcoal, Acrylic, Liquid Lead, Oil' },
   { label: 'Rooms', href: '/products/rooms', description: 'Room mockup previews' },
   { label: 'Collections', href: '/collections/new-earth', description: 'Curated series like "New Earth"' },
 ];
 
-export default function Header() {
+interface HeaderProps {
+  navConfig?: NavItem[];
+}
+
+export default function Header({ navConfig }: HeaderProps) {
   const itemCount = useCartStore((state) => state.getItemCount());
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const menuItems = navConfig && navConfig.length > 0 ? navConfig : DEFAULT_PRODUCTS_MENU;
 
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/80 backdrop-blur-md">
@@ -50,7 +56,7 @@ export default function Header() {
 
             {isProductsOpen && (
               <div className="absolute left-1/2 top-full z-50 mt-3 w-64 -translate-x-1/2 rounded-xl border border-neutral-800 bg-neutral-950 p-2 shadow-xl">
-                {PRODUCTS_MENU.map((item) => (
+                {menuItems.map((item) => (
                   <Link
                     key={item.label}
                     href={item.href}
