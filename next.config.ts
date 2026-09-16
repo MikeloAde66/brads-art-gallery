@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'tajysjunoobjmyncpdft.supabase.co',
+      },
     ],
   },
   // This project lives nested inside the protolabsglobal-main-shell repo,
