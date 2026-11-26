@@ -8,6 +8,7 @@ interface ArtworkCardProps {
   artwork: Artwork;
   index: number;
   onSelect: (artwork: Artwork) => void;
+  compact?: boolean;
 }
 
 const cardVariants = {
@@ -30,7 +31,7 @@ function uniqueInOrder<T>(values: T[]): T[] {
   return Array.from(new Set(values));
 }
 
-export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardProps) {
+export default function ArtworkCard({ artwork, index, onSelect, compact = false }: ArtworkCardProps) {
   const hasPrints = artwork.variants.length > 0;
   const mediumLabel = uniqueInOrder(artwork.variants.map((v) => MEDIUM_LABELS[v.medium] ?? v.medium)).join(' & ');
 
@@ -50,22 +51,32 @@ export default function ArtworkCard({ artwork, index, onSelect }: ArtworkCardPro
           src={artwork.image}
           alt={artwork.title}
           fill
-          sizes="(min-width: 768px) 50vw, 100vw"
+          sizes={compact ? '(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw' : '(min-width: 768px) 50vw, 100vw'}
           className="object-contain transition-opacity duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
 
-      <div className="mt-6 max-w-md">
-        <h3 className="font-serif text-xl text-neutral-100">{artwork.title}</h3>
-        {mediumLabel && <p className="mt-1 text-xs uppercase tracking-[0.15em] text-neutral-500">{mediumLabel}</p>}
+      <div className={compact ? 'mt-3' : 'mt-6 max-w-md'}>
+        <h3 className={compact ? 'font-serif text-sm text-neutral-100' : 'font-serif text-xl text-neutral-100'}>
+          {artwork.title}
+        </h3>
+        {mediumLabel && (
+          <p className={compact ? 'mt-1 text-[10px] uppercase tracking-[0.1em] text-neutral-500' : 'mt-1 text-xs uppercase tracking-[0.15em] text-neutral-500'}>
+            {mediumLabel}
+          </p>
+        )}
 
-        <p className="mt-4 text-xs uppercase tracking-[0.1em] text-neutral-300">
-          Original Work Available <span className="text-neutral-600">·</span> Inquire for Private Acquisition
-        </p>
+        {!compact && (
+          <p className="mt-4 text-xs uppercase tracking-[0.1em] text-neutral-300">
+            Original Work Available <span className="text-neutral-600">·</span> Inquire for Private Acquisition
+          </p>
+        )}
 
         {hasPrints && (
-          <p className="mt-1 text-xs text-neutral-500">Archival Prints Available from $180</p>
+          <p className={compact ? 'mt-1 text-[10px] text-neutral-500' : 'mt-1 text-xs text-neutral-500'}>
+            {compact ? 'Prints from $180' : 'Archival Prints Available from $180'}
+          </p>
         )}
       </div>
     </motion.button>

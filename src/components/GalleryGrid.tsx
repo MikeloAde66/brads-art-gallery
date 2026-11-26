@@ -11,14 +11,30 @@ interface GalleryGridProps {
 
 export default function GalleryGrid({ artworks }: GalleryGridProps) {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [featured, ...rest] = artworks;
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-20">
-        {artworks.map((artwork, index) => (
-          <ArtworkCard key={artwork.id} artwork={artwork} index={index} onSelect={setSelectedArtwork} />
-        ))}
-      </div>
+      {featured && (
+        <div className="mb-16">
+          <ArtworkCard artwork={featured} index={0} onSelect={setSelectedArtwork} />
+        </div>
+      )}
+
+      {rest.length > 0 && (
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+          {rest.map((artwork, index) => (
+            <ArtworkCard
+              key={artwork.id}
+              artwork={artwork}
+              index={index + 1}
+              onSelect={setSelectedArtwork}
+              compact
+            />
+          ))}
+        </div>
+      )}
+
       <ProductModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
     </>
   );
