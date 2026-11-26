@@ -32,6 +32,19 @@ export async function POST(request: NextRequest) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
 
+    // Original Works have no FinerWorks fulfillment and no database to flip
+    // `sold` automatically — surface it loudly in logs so Brad can arrange
+    // shipping/handoff by hand and update src/data/originalWorks.ts himself.
+    if (session.metadata?.original_work_id) {
+      console.log(
+        `ORIGINAL WORK SOLD: "${session.metadata.original_work_title}" ` +
+          `(${session.metadata.original_work_id}) — Stripe session ${session.id}, ` +
+          `buyer email: ${session.customer_details?.email ?? 'none on file'}. ` +
+          `Mark it sold in src/data/originalWorks.ts and redeploy.`
+      );
+      return NextResponse.json({ received: true });
+    }
+
     const chunkCount = Number(session.metadata?.finerworks_order_count ?? '0');
     const lineItems: FinerWorksLineItem[] = [];
 

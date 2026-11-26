@@ -86,6 +86,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   },
   nav: [
     { label: 'Wall Art', href: '/shop', description: 'Canvas, framed, and paper prints' },
+    { label: 'Original Works', href: '/originals', description: 'One-of-a-kind paintings — collector pricing' },
     { label: 'Media', href: '/products/media', description: 'Charcoal, Acrylic, Liquid Lead, Oil' },
     { label: 'Rooms', href: '/products/rooms', description: 'Room mockup previews' },
     { label: 'Collections', href: '/collections/new-earth', description: 'Curated series like "New Earth"' },

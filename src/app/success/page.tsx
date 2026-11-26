@@ -1,13 +1,29 @@
 import Link from 'next/link';
 
-export default function SuccessPage() {
+export default async function SuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const { type } = await searchParams;
+  const isOriginal = type === 'original';
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-950 px-6 text-center text-neutral-100">
       <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">Order Confirmed</p>
       <h1 className="mt-3 font-serif text-3xl">Thank you for your order</h1>
       <p className="mt-4 max-w-md text-sm text-neutral-400">
-        Your print is being prepared for fulfillment. A confirmation email from Stripe is on its way,
-        and FinerWorks will begin production shortly.
+        {isOriginal ? (
+          <>
+            A confirmation email from Stripe is on its way. Brad will reach out directly to arrange shipping or
+            pickup for your original piece.
+          </>
+        ) : (
+          <>
+            Your print is being prepared for fulfillment. A confirmation email from Stripe is on its way,
+            and FinerWorks will begin production shortly.
+          </>
+        )}
       </p>
       <Link
         href="/"

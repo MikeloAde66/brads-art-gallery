@@ -9,6 +9,7 @@ import CartDrawer from './CartDrawer';
 
 const DEFAULT_PRODUCTS_MENU: NavItem[] = [
   { label: 'Wall Art', href: '/shop', description: 'Canvas, framed, and paper prints' },
+  { label: 'Original Works', href: '/originals', description: 'One-of-a-kind paintings — collector pricing' },
   { label: 'Media', href: '/products/media', description: 'Charcoal, Acrylic, Liquid Lead, Oil' },
   { label: 'Rooms', href: '/products/rooms', description: 'Room mockup previews' },
   { label: 'Collections', href: '/collections/new-earth', description: 'Curated series like "New Earth"' },
@@ -37,6 +38,13 @@ export default function Header({ navConfig }: HeaderProps) {
             className="text-xs uppercase tracking-[0.15em] text-neutral-300 transition-colors hover:text-white"
           >
             Shop
+          </Link>
+
+          <Link
+            href="/gallery-listing"
+            className="text-xs uppercase tracking-[0.15em] text-neutral-300 transition-colors hover:text-white"
+          >
+            Gallery Listing
           </Link>
 
           <div
