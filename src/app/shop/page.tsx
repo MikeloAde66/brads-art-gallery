@@ -8,10 +8,20 @@ export const metadata: Metadata = {
 
 export default function ShopPage() {
   return (
-    <main className="flex-1">
+    <main className="relative flex-1">
+      {/* Temporary full-page background video — picture-in-picture test, not final */}
+      <video
+        className="fixed inset-0 -z-10 h-full w-full object-cover"
+        src="/video/shop-bg-temp.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+      <div className="fixed inset-0 -z-10 bg-black/50" />
+
       <section className="mx-auto max-w-6xl px-6 pb-8 pt-24 sm:pt-32">
-        <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">Full Collection</p>
-        <h1 className="mt-4 font-serif text-4xl leading-tight text-neutral-50 sm:text-5xl">Shop</h1>
+        {/* Header intentionally left empty for now */}
       </section>
 
       <section className="mx-auto max-w-6xl px-6 py-24">

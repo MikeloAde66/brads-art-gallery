@@ -17,7 +17,17 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
     <>
       {featured && (
         <div className="mb-16">
-          <ArtworkCard artwork={featured} index={0} onSelect={setSelectedArtwork} />
+          {/* Temporary: featured slot shows the same bg video, picture-in-picture style. Not final — text/labels to come later. */}
+          <div className="relative aspect-[4/5] w-full overflow-hidden bg-neutral-900 sm:aspect-video">
+            <video
+              className="h-full w-full object-cover"
+              src="/video/shop-bg-temp.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          </div>
         </div>
       )}
 
