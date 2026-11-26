@@ -33,7 +33,7 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
       <div className="mt-16 aspect-[4/3] w-full max-w-sm overflow-hidden bg-neutral-900">
         <video
           className="h-full w-full object-cover"
-          src="/video/shop-bg-temp.mp4"
+          src="https://res.cloudinary.com/dgz8wscjl/video/upload/v1795714535/compressed_ykysqw.mp4"
           autoPlay
           muted
           loop
