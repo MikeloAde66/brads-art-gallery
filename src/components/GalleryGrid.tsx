@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import type { Artwork } from '@/data/artworks';
 import ArtworkCard from './ArtworkCard';
 import ProductModal from './ProductModal';
@@ -29,15 +30,43 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
         </div>
       )}
 
-      {/* Temporary: small video preview under the thumbnails, roughly embed-player sized. Not final. */}
-      <div className="mt-16 aspect-[4/3] w-full max-w-sm overflow-hidden bg-neutral-900">
-        <video
-          className="h-full w-full object-cover"
-          src="https://res.cloudinary.com/dgz8wscjl/video/upload/v1795714535/compressed_ykysqw.mp4"
-          controls
-          playsInline
-          disablePictureInPicture
-        />
+      {/* Temporary: video preview + stacked static teaser slots underneath, all same box size. Not final — these can become real links/gates later, and one can hold a small ad. */}
+      <div className="mt-16 flex max-w-sm flex-col gap-6">
+        <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-900">
+          <video
+            className="h-full w-full object-cover"
+            src="https://res.cloudinary.com/dgz8wscjl/video/upload/v1795714535/compressed_ykysqw.mp4"
+            controls
+            playsInline
+            disablePictureInPicture
+          />
+        </div>
+
+        {/* Teaser slot — static image for now, silent hype, no copy */}
+        {artworks[1] && (
+          <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-900">
+            <Image
+              src={artworks[1].image}
+              alt=""
+              width={640}
+              height={480}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
+
+        {/* Teaser slot — reserved for a small ad later */}
+        {artworks[2] && (
+          <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-900">
+            <Image
+              src={artworks[2].image}
+              alt=""
+              width={640}
+              height={480}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
       </div>
 
       <ProductModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
