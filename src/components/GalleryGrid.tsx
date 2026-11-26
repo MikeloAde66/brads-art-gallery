@@ -34,10 +34,9 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
         <video
           className="h-full w-full object-cover"
           src="https://res.cloudinary.com/dgz8wscjl/video/upload/v1795714535/compressed_ykysqw.mp4"
-          autoPlay
-          muted
-          loop
+          controls
           playsInline
+          disablePictureInPicture
         />
       </div>
 
