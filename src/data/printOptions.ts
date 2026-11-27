@@ -16,6 +16,9 @@ export const SIZE_PRESETS: SizePreset[] = [
   { id: '13x19', label: '13" x 19"', widthIn: 13, heightIn: 19 },
   { id: '13x18.71', label: '13" x 18.71"', widthIn: 13, heightIn: 18.71 },
   { id: '24x36', label: '24" x 36"', widthIn: 24, heightIn: 36 },
+  // Headroom for originals/large paintings — Brad wants up to 24x32+ available
+  // once a piece's variants are set up with it; not assigned to anything yet.
+  { id: '24x32', label: '24" x 32"', widthIn: 24, heightIn: 32 },
 ];
 
 export interface FrameStyle {

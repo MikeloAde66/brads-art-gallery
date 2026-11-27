@@ -13,6 +13,14 @@ interface GalleryGridProps {
 export default function GalleryGrid({ artworks }: GalleryGridProps) {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
 
+  const selectedIndex = selectedArtwork ? artworks.findIndex((a) => a.id === selectedArtwork.id) : -1;
+  const handlePrev =
+    selectedIndex > 0 ? () => setSelectedArtwork(artworks[selectedIndex - 1]) : undefined;
+  const handleNext =
+    selectedIndex >= 0 && selectedIndex < artworks.length - 1
+      ? () => setSelectedArtwork(artworks[selectedIndex + 1])
+      : undefined;
+
   return (
     <>
       {/* Temporary: no hero slot for now — keeping the top clean while we test the bg video. */}
@@ -87,7 +95,12 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
         )}
       </div>
 
-      <ProductModal artwork={selectedArtwork} onClose={() => setSelectedArtwork(null)} />
+      <ProductModal
+        artwork={selectedArtwork}
+        onClose={() => setSelectedArtwork(null)}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
     </>
   );
 }
