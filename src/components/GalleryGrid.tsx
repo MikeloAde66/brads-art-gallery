@@ -37,6 +37,20 @@ export default function GalleryGrid({ artworks }: GalleryGridProps) {
         </div>
       )}
 
+      {/* Video preview box — kept per Brad; only the two static image teaser
+          slots below it were removed. */}
+      <div className="mt-16 max-w-sm">
+        <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-900">
+          <video
+            className="h-full w-full object-cover"
+            src="https://res.cloudinary.com/dgz8wscjl/video/upload/v1795714535/compressed_ykysqw.mp4"
+            controls
+            playsInline
+            disablePictureInPicture
+          />
+        </div>
+      </div>
+
       <ProductModal
         artwork={selectedArtwork}
         onClose={() => setSelectedArtwork(null)}
