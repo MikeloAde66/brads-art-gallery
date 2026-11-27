@@ -12,6 +12,8 @@ export interface ArtworkVariant {
   retailPrice: number;
 }
 
+export type OriginalMedium = 'charcoal' | 'acrylic' | 'liquid-lead' | 'oil';
+
 export interface Artwork {
   id: string;
   slug: string;
@@ -19,6 +21,13 @@ export interface Artwork {
   theme: 'impasto' | 'monochrome' | 'coastal' | 'chiaroscuro';
   image: string;
   variants: ArtworkVariant[];
+  /** The medium the ORIGINAL piece was made in (not the print substrate above).
+   *  Powers the Media menu's Charcoal/Acrylic/Liquid Lead/Oil sections — unset
+   *  until Brad tags each piece, since only he knows which is which. */
+  originalMedium?: OriginalMedium;
+  /** Curated-series tags (e.g. 'new-earth') — powers the Collections pages.
+   *  A piece can belong to more than one. */
+  collections?: string[];
 }
 
 export const ARTWORKS: Artwork[] = [
