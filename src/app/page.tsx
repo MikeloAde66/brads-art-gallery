@@ -1,22 +1,19 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import ShopIntro from '@/components/ShopIntro';
+import HeroVideoReveal from '@/components/HeroVideoReveal';
 
-// Front door: full-bleed gallery-entrance photo as the background, with a
-// single "enter" link through to the Shop. Per Brad's reference screenshot —
-// the whole viewport below the header is the photo, no card or copy block
-// boxing it in. The paint-splash welcome intro sits over the top-left of the
-// photo rather than its own section.
+// Front door: full-bleed hero, with a single "enter" link through to the
+// Shop. TRYOUT: the static entrance photo is swapped for a video-then-image
+// reveal (plays once on landing, then cross-fades to a still) just so Brad
+// can see how it feels — not committed to this yet.
 export default function HomePage() {
   return (
     <main className="relative flex-1">
       <section className="relative min-h-[calc(100vh-5rem)] w-full overflow-hidden">
-        <Image
-          src="/images/site/home-hero.png"
-          alt="Gallery entrance"
-          fill
-          priority
-          className="object-cover"
+        <HeroVideoReveal
+          videoSrc="/videos/home-hero-intro.mp4"
+          imageSrc="/images/site/home-hero-reveal.jpg"
+          imageAlt="Featured painting"
         />
         {/* Darken slightly for text legibility without flattening the photo */}
         <div className="absolute inset-0 bg-black/15" />
