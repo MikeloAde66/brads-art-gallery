@@ -92,13 +92,13 @@ export default function ShopIntro() {
       </svg>
 
       <div className="relative pt-16 sm:pt-20">
-        <h1 className="font-serif text-4xl leading-tight text-neutral-50 sm:text-5xl">
+        <h1 className="font-serif text-4xl leading-tight text-neutral-50 drop-shadow-lg sm:text-5xl">
           {typed}
           <span className="ml-1 inline-block w-[2px] animate-pulse bg-neutral-100 align-middle" style={{ height: '0.9em', opacity: typed.length < HEADLINE.length ? 1 : 0 }} />
         </h1>
 
         <motion.p
-          className="mt-5 max-w-2xl text-sm leading-relaxed text-neutral-400 sm:text-base"
+          className="mt-5 max-w-2xl text-sm leading-relaxed text-neutral-200 drop-shadow-md sm:text-base"
           initial={{ opacity: 0, y: 10 }}
           animate={showSubtext ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
